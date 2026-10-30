@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+    --color-barber-gold: #C9A24B;
+    --color-barber-light: #F2EDE4;
+    --color-barber-gray: #A89F91;
+    --color-barber-main: #14120F;
+    --color-barber-muted: #7D7568;
+    --color-barber-card: #2E2A24;
+
+    --font-oswald: 'Oswald', sans-serif;
+    --font-inter: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--color-barber-main);
+    color: var(--color-barber-light);
+    font-family: var(--font-inter);
+}
