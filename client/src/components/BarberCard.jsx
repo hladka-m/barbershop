@@ -17,15 +17,21 @@ function BarberCard({ id, firstName, lastName, specialization, phone, photo, sch
     };
 
     return (
-        <div className="bg-[#1a1714] border border-barber-muted p-6 rounded-lg flex flex-col justify-between hover:border-barber-gold transition">
+        <div className="bg-[#1a1714] border border-barber-muted p-6 rounded-lg flex flex-col justify-between hover:border-barber-gold transition group">
         
             <div>
                 {/* Фото барбера */}
-                <div className="w-full h-64 bg-barber-muted/30 rounded mb-4 overflow-hidden flex items-center justify-center border border-barber-muted">
+                <div className="w-full h-64 bg-barber-muted/30 rounded mb-4 overflow-hidden border border-barber-muted">
                     {photo ? (
-                        <img src={photo} alt={`${firstName} ${lastName}`} className="w-full h-full object-cover" />
+                        <img 
+                            src={photo} 
+                            alt={`${firstName} ${lastName}`} 
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                        />
                     ) : (
-                        <span className="text-barber-gray text-sm">[Фото барбера]</span>
+                        <div className="w-full h-full flex items-center justify-center">
+                            <span className="text-barber-gray text-sm">[Фото барбера]</span>
+                        </div>
                     )}
                 </div>
 
