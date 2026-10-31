@@ -16,7 +16,7 @@ function Navbar() {
                 {/* Логотип */}
                 <Link 
                     to="/" 
-                    className="font-oswald text-2xl font-bold tracking-wider text-barber-light hover:text-barber-gray transition"
+                    className="font-oswald text-3xl font-bold tracking-wider text-barber-light hover:text-barber-gray transition"
                 >
                     BARBERSHOP
                 </Link>
