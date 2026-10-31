@@ -36,6 +36,33 @@ app.get('/api/services', async (req, res) => {
     }
 });
 
+app.get('/api/barbers', async (req, res) => {
+    try {
+        // 1. Отримуємо всіх барберів
+        const barbersResult = await pool.query('SELECT * FROM barbers');
+        const barbers = barbersResult.rows;
+
+        // 2. Для кожного барбера витягуємо його робочий графік із таблиці work_schedules
+        const barbersWithSchedules = await Promise.all(
+            barbers.map(async (barber) => {
+                const scheduleResult = await pool.query(
+                    'SELECT work_date, start_time, end_time FROM work_schedules WHERE barber_id = $1 ORDER BY work_date ASC',
+                    [barber.barber_id]
+                );
+                return {
+                    ...barber,
+                    schedules: scheduleResult.rows
+                };
+            })
+        );
+
+        res.json(barbersWithSchedules);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Помилка сервера');
+    }
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Сервер запущено на порту ${PORT}`);
