@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 function ServiceCard({ name, price, duration }) {
     return (
-        <div className="bg-barber-card border border-barber-muted p-6 rounded-lg flex flex-col justify-between hover:border-barber-gold transition">
+        <div className="bg-[#1a1714] border border-barber-muted p-6 rounded-lg flex flex-col justify-between hover:border-barber-gold transition">
         
             {/* Верхня частина: Назва послуги та ціна */}
             <div className="flex justify-between items-start gap-4 mb-4">
