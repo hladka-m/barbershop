@@ -1,8 +1,12 @@
-import { Link } from 'react-router-dom';
 import { Phone } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 function BarberCard({ id, firstName, lastName, specialization, phone, photo, schedules }) {
-    
+    const navigate = useNavigate();
+
+    const handleSelectBarber = () => {
+        navigate('/booking', { state: { selectedBarberId: id } });
+    };
     // Функція для красивого форматування дати
     const formatDate = (dateString) => {
         if (!dateString) return '';
@@ -73,12 +77,12 @@ function BarberCard({ id, firstName, lastName, specialization, phone, photo, sch
             </div>
 
             {/* Кнопка запису */}
-            <Link 
-                to={`/booking?barber=${id}`}
+            <button
+                onClick={handleSelectBarber}
                 className="w-full border border-barber-gold text-barber-gold hover:bg-barber-gold hover:text-barber-main py-2.5 rounded text-sm font-bold transition text-center uppercase tracking-wider"
             >
                 Записатись до барбера
-            </Link>
+            </button>
 
         </div>
     );

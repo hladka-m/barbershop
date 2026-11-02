@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function Booking() {
     const navigate = useNavigate();
+    const location = useLocation();
 
     // Дані з бази
     const [services, setServices] = useState([]);
@@ -28,15 +29,31 @@ function Booking() {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        // Завантаження послуг і барберів
+        // 1. Завантаження послуг і після цього перевірка, чи передано послугу з роутера
         axios.get('http://localhost:5000/api/booking/services')
-            .then(res => setServices(res.data))
+            .then(res => {
+                setServices(res.data);
+                // Якщо з іншої сторінки передали конкретну послугу
+                if (location.state && location.state.selectedServiceId) {
+                    const foundService = res.data.find(s => s.service_id === location.state.selectedServiceId);
+                    if (foundService) {
+                        setSelectedServices([foundService]);
+                    }
+                }
+            })
             .catch(err => console.error("Помилка послуг:", err));
 
+        // 2. Завантаження барберів і перевірка, чи передано барбера з роутера
         axios.get('http://localhost:5000/api/booking/barbers')
-            .then(res => setBarbers(res.data))
+            .then(res => {
+                setBarbers(res.data);
+                // Якщо з іншої сторінки передали конкретного барбера
+                if (location.state && location.state.selectedBarberId) {
+                    setSelectedBarber(String(location.state.selectedBarberId));
+                }
+            })
             .catch(err => console.error("Помилка барберів:", err));
-    }, []);
+    }, [location.state]);
 
     useEffect(() => {
         if (selectedBarber && date) {

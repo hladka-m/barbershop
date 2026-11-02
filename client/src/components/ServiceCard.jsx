@@ -1,6 +1,12 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-function ServiceCard({ name, price, duration }) {
+function ServiceCard({ service_id, name, price, duration }) {
+    const navigate = useNavigate();
+
+    const handleSelectService = () => {
+        navigate('/booking', { state: { selectedServiceId: service_id } });
+    };
+
     return (
         <div className="bg-[#1a1714] border border-barber-muted p-6 rounded-lg flex flex-col justify-between hover:border-barber-gold transition">
         
@@ -20,12 +26,12 @@ function ServiceCard({ name, price, duration }) {
                     Тривалість: <span className="text-barber-light font-medium">{duration}</span> хв
                 </p>
 
-                <Link 
-                    to={`/booking?service=${encodeURIComponent(name)}`}
+                <button
+                    onClick={handleSelectService}
                     className="border border-barber-gold text-barber-gold hover:bg-barber-gold hover:text-barber-main px-5 py-2 rounded text-sm font-bold transition"
                 >
                     Обрати
-                </Link>
+                </button>
             </div>
 
         </div>
