@@ -1,16 +1,38 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
     const location = useLocation();
+
+    const isHome = location.pathname === '/';
+
+    // Слухач прокрутки сторінки
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 20) {
+                setIsScrolled(true);
+            } else {
+                setIsScrolled(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const handleLinkClick = () => {
         setIsOpen(false);
     };
 
     return (
-        <header className="bg-barber-main border-b border-barber-muted px-6 md:px-8 relative z-50 h-20 flex items-center">
+        <header className={`
+            sticky top-0 w-full z-50 px-6 md:px-8 h-20 flex items-center transition-all duration-300
+            ${isHome && !isScrolled 
+                ? 'absolute top-0 left-0 bg-transparent border-transparent' 
+                : (!isScrolled ? 'bg-barber-main border-b border-barber-muted' : 'bg-barber-main/70 backdrop-blur-md border-transparent shadow-lg')}
+        `}>
             <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
                 
                 {/* Логотип */}
@@ -55,7 +77,7 @@ function Navbar() {
                     </Link>
                 </nav>
 
-                {/* Кнопка-бургер / Хрестик*/}
+                {/* Кнопка-бургер / Хрестик */}
                 <button 
                     onClick={() => setIsOpen(!isOpen)}
                     className="md:hidden text-barber-gold focus:outline-none p-2 flex items-center justify-center w-10 h-10"
@@ -63,12 +85,12 @@ function Navbar() {
                 >
                     {isOpen ? (
                         <span className="text-2xl font-bold">✕</span>
-                        ) : (
-                            <div className="space-y-1.5 w-7">
-                                <div className="h-0.5 bg-barber-gold w-full"></div>
-                                <div className="h-0.5 bg-barber-gold w-full"></div>
-                                <div className="h-0.5 bg-barber-gold w-full"></div>
-                            </div>
+                    ) : (
+                        <div className="space-y-1.5 w-7">
+                            <div className="h-0.5 bg-barber-gold w-full"></div>
+                            <div className="h-0.5 bg-barber-gold w-full"></div>
+                            <div className="h-0.5 bg-barber-gold w-full"></div>
+                        </div>
                     )}
                 </button>
 
