@@ -287,28 +287,32 @@ app.get('/api/booking/available-slots', async (req, res) => {
             return res.status(400).json({ error: 'Не вказано барбера або дату' });
         }
 
-        // Визначаємо день тижня (0 - неділя, 1 - понеділок, ..., 6 - субота)
-        const targetDate = new Date(date);
-        const dayOfWeek = targetDate.getDay();
+        // 1. ПЕРЕВІРКА ГРАФІКУ: Чи є у барбера зміна на цю конкретну дату в базі даних
+        const scheduleQuery = `
+            SELECT start_time, end_time 
+            FROM work_schedules 
+            WHERE barber_id = $1 AND work_date = $2
+        `;
+        const scheduleResult = await pool.query(scheduleQuery, [barberId, date]);
 
-        // Встановлюємо робочі години відповідно до твого графіку:
-        // Пн-Пт (1-5): 09:00 - 20:00, Сб-Нд (6, 0): 10:00 - 18:00
-        let startHour = 9;
-        let endHour = 20;
-
-        if (dayOfWeek === 0 || dayOfWeek === 6) {
-            startHour = 10;
-            endHour = 18;
+        // Якщо у барбера немає зміни на цей день — повертаємо порожній масив
+        if (scheduleResult.rows.length === 0) {
+            return res.json([]);
         }
 
-        // Генеруємо всі можливі годинні слоти (наприклад, щогодини або кожні 1.5 години)
+        // Отримуємо години початку та кінця робочої зміни з бази (наприклад, "09:00:00" -> 9 та 20)
+        const schedule = scheduleResult.rows[0];
+        const startHour = parseInt(schedule.start_time.split(':')[0], 10);
+        const endHour = parseInt(schedule.end_time.split(':')[0], 10);
+
+        // 2. Генеруємо годинні слоти відповідно до реальної зміни барбера
         let allSlots = [];
         for (let i = startHour; i < endHour; i++) {
             let hourStr = i < 10 ? `0${i}:00` : `${i}:00`;
             allSlots.push(hourStr);
         }
 
-        // Отримуємо вже зайняті години для цього барбера на цю дату з таблиці appointments
+        // 3. Отримуємо вже зайняті години для цього барбера на цю дату з таблиці appointments
         const busyQuery = `
             SELECT TO_CHAR(appointment_date, 'HH24:00') AS booked_time
             FROM appointments

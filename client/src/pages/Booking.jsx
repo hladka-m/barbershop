@@ -33,7 +33,6 @@ function Booking() {
         axios.get('http://localhost:5000/api/booking/services')
             .then(res => {
                 setServices(res.data);
-                // Якщо з іншої сторінки передали конкретну послугу
                 if (location.state && location.state.selectedServiceId) {
                     const foundService = res.data.find(s => s.service_id === location.state.selectedServiceId);
                     if (foundService) {
@@ -47,7 +46,6 @@ function Booking() {
         axios.get('http://localhost:5000/api/booking/barbers')
             .then(res => {
                 setBarbers(res.data);
-                // Якщо з іншої сторінки передали конкретного барбера
                 if (location.state && location.state.selectedBarberId) {
                     setSelectedBarber(String(location.state.selectedBarberId));
                 }
@@ -89,7 +87,7 @@ function Booking() {
 
         setLoading(true);
         try {
-            const appointmentDate = `${date} ${time}:00`; // Формат дати і часу для БД
+            const appointmentDate = `${date} ${time}:00`; 
             const payload = {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
@@ -124,7 +122,6 @@ function Booking() {
                     Професійний догляд за кілька кліків. Забронюйте свій візит нижче.
                 </p>
 
-                {/* Головна сітка та форма об'єднані в єдиний компонент */}
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                     
                     {/* ЛІВА КОЛОНКА: 4 КРОКИ */}
@@ -206,7 +203,7 @@ function Booking() {
                                 {(!selectedBarber || !date) ? (
                                     <p className="text-sm text-barber-gray italic">Будь ласка, спочатку оберіть барбера та дату.</p>
                                 ) : availableSlots.length === 0 ? (
-                                    <p className="text-sm text-barber-gray italic">Немає доступного часу на цю дату.</p>
+                                    <p className="text-sm text-barber-gold italic">Барбер не працює в цей день (немає запланованої зміни).</p>
                                 ) : (
                                     <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
                                         {availableSlots.map((slot) => (

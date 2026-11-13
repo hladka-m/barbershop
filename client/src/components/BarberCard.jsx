@@ -1,23 +1,11 @@
 import { Phone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-function BarberCard({ id, firstName, lastName, specialization, phone, photo, schedules }) {
+function BarberCard({ id, firstName, lastName, specialization, phone, photo }) {
     const navigate = useNavigate();
 
     const handleSelectBarber = () => {
         navigate('/booking', { state: { selectedBarberId: id } });
-    };
-    // Функція для красивого форматування дати
-    const formatDate = (dateString) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return date.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' });
-    };
-
-    // Функція для обрізання секунд із часу (з "09:00:00" на "09:00")
-    const formatTime = (timeString) => {
-        if (!timeString) return '';
-        return timeString.split(':').slice(0, 2).join(':');
     };
 
     return (
@@ -54,26 +42,6 @@ function BarberCard({ id, firstName, lastName, specialization, phone, photo, sch
                     <Phone className="w-4 h-4 text-barber-gold shrink-0" />
                     {phone}
                 </p>
-
-                {/* Найближчі робочі дні */}
-                <div className="border-t border-barber-muted/40 pt-4 mb-6">
-                    <p className="text-xs text-barber-gold tracking-widest uppercase mb-3">
-                        Найближчі робочі дні
-                    </p>
-                    
-                    <div className="flex flex-col gap-2">
-                        {schedules && schedules.length > 0 ? (
-                            schedules.map((item, index) => (
-                                <div key={index} className="bg-barber-main border border-barber-muted px-3 py-2 rounded text-xs text-barber-light flex justify-between items-center">
-                                    <span className="text-barber-light font-medium">{formatDate(item.work_date)}</span>
-                                    <span className="text-barber-gray">{formatTime(item.start_time)} - {formatTime(item.end_time)}</span>
-                                </div>
-                            ))
-                            ) : (
-                            <p className="text-barber-gray text-xs italic">Немає запланованих змін</p>
-                        )}
-                    </div>
-                </div>
             </div>
 
             {/* Кнопка запису */}
@@ -88,4 +56,4 @@ function BarberCard({ id, firstName, lastName, specialization, phone, photo, sch
     );
 }
 
-export default BarberCard; // Збережи як export default BarberCard;
+export default BarberCard;

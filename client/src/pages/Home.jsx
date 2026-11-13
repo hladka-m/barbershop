@@ -30,7 +30,7 @@ function Home() {
             
             {/* --- HERO СЕКЦІЯ З БАНЕРОМ --- */}
             {/* Задаємо висоту і мінус-маргін зверху, щоб секція почалася від самого верху екрана під прозорим хедером */}
-            <section className="relative w-full h-[90vh] min-h-162.5 flex items-center px-6 md:px-12 overflow-hidden -mt-20 pt-20">
+            <section className="relative w-full h-screen min-h-162.5 flex items-center px-6 md:px-12 overflow-hidden -mt-20 pt-20">
                 
                 {/* Фонове зображення на всю секцію з темним градієнтом/затемненням */}
                 <div className="absolute inset-0 z-0">
@@ -78,7 +78,7 @@ function Home() {
                 </div>
             </section>
 
-            <div className="border-t border-barber-muted w-full"></div>
+            <div className="border-t border-barber-muted w-full opacity-30"></div>
 
             {/* --- ПОПУЛЯРНІ ПОСЛУГИ --- */}
             <section className="py-20 px-6 md:px-12 max-w-7xl mx-auto">
@@ -118,7 +118,7 @@ function Home() {
                 </div>
             </section>
 
-            <div className="border-t border-barber-muted w-full"></div>
+            <div className="border-t border-barber-muted w-full opacity-30"></div>
 
             {/* --- НАШІ БАРБЕРИ --- */}
             <section className="py-20 px-6 md:px-12 max-w-7xl mx-auto">
@@ -167,7 +167,7 @@ function Home() {
                 </div>
             </section>
 
-            <div className="border-t border-barber-muted w-full"></div>
+            <div className="border-t border-barber-muted w-full opacity-30"></div>
 
             {/* --- ЩО КАЖУТЬ КЛІЄНТИ (5 ЗІРОК) --- */}
             <section className="py-20 px-6 md:px-12 max-w-7xl mx-auto">
