@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # Сервіс бази даних PostgreSQL
+  postgres_db:
+    image: postgres:15-alpine
+    container_name: barbershop_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: bdjilka1610  # Замініть на свій пароль до бази
+      POSTGRES_DB: postgres            # Назва вашої бази даних
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  # Сервіс нашого бекенду (Node.js)
+  server:
+    build: ./server
+    container_name: barbershop_server
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - DB_HOST=postgres_db
+      - DB_USER=postgres
+      - DB_PASSWORD=bdjilka1610
+      - DB_NAME=postgres
+      - DB_PORT=5432
+    depends_on:
+      - postgres_db
+
+volumes:
+  pgdata:
