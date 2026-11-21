@@ -74,6 +74,34 @@ function Booking() {
     const totalPrice = selectedServices.reduce((sum, s) => sum + Number(s.price), 0);
     const totalDuration = selectedServices.reduce((sum, s) => sum + Number(s.duration_min), 0);
 
+    const timeToMinutes = (timeStr) => {
+        const [hours, minutes] = timeStr.split(':').map(Number);
+        return hours * 60 + minutes;
+    };
+
+    const shiftEndMinutes = availableSlots.length > 0
+        ? timeToMinutes(availableSlots[availableSlots.length - 1].time) + 60
+        : 0;
+
+    const isSlotAvailable = (slot) => {
+        if (slot.isBooked) return false;
+
+        const duration = totalDuration > 0 ? totalDuration : 60;
+        const slotStart = timeToMinutes(slot.time);
+        const slotEnd = slotStart + duration;
+
+        if (slotEnd > shiftEndMinutes) return false;
+
+        const hasOverlap = availableSlots.some((otherSlot) => {
+            if (!otherSlot.isBooked) return false;
+            const busyStart = timeToMinutes(otherSlot.time);
+            const busyEnd = busyStart + 60;
+            return slotStart < busyEnd && slotEnd > busyStart;
+        });
+
+        return !hasOverlap;
+    };
+
     // Знайдемо повний об'єкт обраного барбера
     const currentBarber = barbers.find(b => String(b.barber_id) === String(selectedBarber));
 
@@ -206,23 +234,26 @@ function Booking() {
                                     <p className="text-sm text-barber-gold italic">Барбер не працює в цей день (немає запланованої зміни).</p>
                                 ) : (
                                     <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
-                                        {availableSlots.map((slot) => (
-                                            <button
-                                                type="button"
-                                                key={slot.time}
-                                                disabled={slot.isBooked}
-                                                onClick={() => setTime(slot.time)}
-                                                className={`py-3 rounded border text-sm font-bold font-oswald transition ${
-                                                    slot.isBooked 
-                                                        ? 'bg-red-950/30 border-red-900/50 text-red-400/50 cursor-not-allowed line-through' 
-                                                        : time === slot.time 
-                                                            ? 'bg-barber-gold text-barber-main border-barber-gold' 
-                                                            : 'border-barber-muted hover:border-barber-gold text-barber-light'
-                                                }`}
-                                            >
-                                                {slot.time}
-                                            </button>
-                                        ))}
+                                        {availableSlots.map((slot) => {
+                                            const isDisabled = !isSlotAvailable(slot);
+                                            return (
+                                                <button
+                                                    type="button"
+                                                    key={slot.time}
+                                                    disabled={isDisabled}
+                                                    onClick={() => setTime(slot.time)}
+                                                    className={`py-3 rounded border text-sm font-bold font-oswald transition ${
+                                                        isDisabled
+                                                            ? 'bg-red-950/30 border-red-900/50 text-red-400/50 cursor-not-allowed line-through'
+                                                            : time === slot.time
+                                                                ? 'bg-barber-gold text-barber-main border-barber-gold'
+                                                                : 'border-barber-muted hover:border-barber-gold text-barber-light'
+                                                    }`}
+                                                >
+                                                    {slot.time}
+                                                </button>
+                                            );
+                                        })}
                                     </div>
                                 )}
                             </div>

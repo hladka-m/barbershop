@@ -38,6 +38,11 @@ function AdminSchedules() {
 
     // Створення / оновлення графіку
     const handleCreateSchedule = async (e) => {
+        const allowedTimes = getDefaultScheduleTimes(formData.work_date);
+        if (formData.start_time < allowedTimes.start_time || formData.end_time > allowedTimes.end_time) {
+            alert(`У цей день графік закладу з ${allowedTimes.start_time} до ${allowedTimes.end_time}`);
+            return;
+        }
         e.preventDefault();
         try {
             await axios.post('http://localhost:5000/api/admin/schedules', formData);
@@ -88,6 +93,20 @@ function AdminSchedules() {
         const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
         const date = new Date(dateString);
         return date.toLocaleDateString('uk-UA', options);
+    };
+
+    const getDefaultScheduleTimes = (dateStr) => {
+        if (!dateStr) {
+            return { start_time: '09:00', end_time: '20:00' };
+        }
+        const [year, month, day] = dateStr.split('-').map(Number);
+        const dayOfWeek = new Date(year, month - 1, day).getDay(); // 0 = неділя, 6 = субота
+        // Вихідні (субота і неділя): 10:00 — 18:00
+        if (dayOfWeek === 0 || dayOfWeek === 6) {
+            return { start_time: '10:00', end_time: '18:00' };
+        }
+        // Будні дні: 09:00 — 20:00
+        return { start_time: '09:00', end_time: '20:00' };
     };
 
     // Рендер однієї картки дня (з однаковою висотою h-full та іконкою відерця)
@@ -226,7 +245,16 @@ function AdminSchedules() {
                                     type="date" 
                                     required
                                     value={formData.work_date}
-                                    onChange={(e) => setFormData({...formData, work_date: e.target.value})}
+                                    onChange={(e) => {
+                                        const newDate = e.target.value;
+                                        const defaultTimes = getDefaultScheduleTimes(newDate);
+                                        setFormData({
+                                            ...formData,
+                                            work_date: newDate,
+                                            start_time: defaultTimes.start_time,
+                                            end_time: defaultTimes.end_time
+                                        });
+                                    }}
                                     className="w-full bg-barber-main border border-barber-muted p-3 rounded text-barber-light focus:border-barber-gold outline-none text-sm cursor-pointer"
                                 />
                             </div>
