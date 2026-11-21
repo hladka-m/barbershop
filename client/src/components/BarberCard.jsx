@@ -1,6 +1,14 @@
 import { Phone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+const getPhotoUrl = (photo) => {
+    if (!photo) return '/photos/b1.jpg';
+    if (photo.startsWith('/photos/') && !/^\/photos\/b\d+\.(jpg|jpeg|png|webp)$/i.test(photo)) {
+        return `http://localhost:5000${photo}`;
+    }
+    return photo;
+};
+
 function BarberCard({ id, firstName, lastName, specialization, phone, photo }) {
     const navigate = useNavigate();
 
@@ -16,7 +24,7 @@ function BarberCard({ id, firstName, lastName, specialization, phone, photo }) {
                 <div className="w-full h-64 bg-barber-muted/30 rounded mb-4 overflow-hidden border border-barber-muted">
                     {photo ? (
                         <img 
-                            src={photo} 
+                            src={getPhotoUrl(photo)} 
                             alt={`${firstName} ${lastName}`} 
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
                         />

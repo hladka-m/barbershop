@@ -504,37 +504,20 @@ app.get('/api/admin/barbers', async (req, res) => {
     }
 });
 
-// Додавання нового барбера
-app.post('/api/admin/barbers', async (req, res) => {
-    try {
-        const { firstName, lastName, phone, specialization, photo } = req.body;
-        
-        const query = `
-            INSERT INTO barbers (first_name, last_name, phone, specialization, photo)
-            VALUES ($1, $2, $3, $4, $5)
-            RETURNING *
-        `;
-        const values = [firstName, lastName, phone, specialization, photo || '/photos/b1.jpg'];
-        const newBarber = await pool.query(query, values);
-
-        res.json(newBarber.rows[0]);
-    } catch (err) {
-        console.error("Помилка додавання барбера:", err.message);
-        res.status(500).send("Помилка сервера");
-    }
-});
-
+const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
 
-// Налаштування сховища для файлів
+const uploadDir = path.join(__dirname, 'uploads/photos');
+fs.mkdirSync(uploadDir, { recursive: true });
+
+app.use('/photos', express.static(uploadDir));
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        // Папка, куди зберігатимемо фото (переконайся, що шлях відповідає твоїй структурі папок)
-        cb(null, '../client/public/photos/'); 
+        cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
-        // Унікальна назва файлу, щоб не було колізій
         cb(null, Date.now() + path.extname(file.originalname));
     }
 });

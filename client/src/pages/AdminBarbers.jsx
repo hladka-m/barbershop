@@ -1,6 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
+const getPhotoUrl = (photo) => {
+    if (!photo) return '/photos/b1.jpg';
+    // Якщо це завантажене через бекенд фото (наприклад /photos/1795187272017.jpg)
+    if (photo.startsWith('/photos/') && !/^\/photos\/b\d+\.(jpg|jpeg|png|webp)$/i.test(photo)) {
+        return `http://localhost:5000${photo}`;
+    }
+    return photo;
+};
+
 function AdminBarbers() {
     const [barbers, setBarbers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -148,7 +157,7 @@ function AdminBarbers() {
                                         <tr key={barber.barber_id} className="hover:bg-barber-muted/10 transition">
                                             <td className="py-4">
                                                 <img 
-                                                    src={barber.photo || '/photos/b1.jpg'} 
+                                                    src={getPhotoUrl(barber.photo)} 
                                                     alt={barber.first_name} 
                                                     className="w-10 h-10 object-cover rounded-full border border-barber-gold"
                                                 />
